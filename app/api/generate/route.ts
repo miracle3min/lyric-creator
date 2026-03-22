@@ -15,10 +15,10 @@ export async function POST(req: NextRequest) {
       "API"
     );
 
-    if (!song.title || !song.genre || !song.mood || !song.description) {
+    if (!song.genre || !song.mood || !song.description) {
       logger.warn(`Bad request [${requestId}]: missing required fields`, "API");
       return NextResponse.json(
-        { error: "Missing required fields: title, genre, mood, description" },
+        { error: "Missing required fields: genre, mood, description" },
         { status: 400 }
       );
     }
@@ -30,6 +30,7 @@ export async function POST(req: NextRequest) {
     logger.info(`Request [${requestId}] completed in ${duration}ms`, "API");
 
     const result: SongResult = {
+      title: data.title || "Untitled",
       lyrics: data.lyrics || "No lyrics generated",
       instruments: data.instruments || "No instrument details generated",
       sunoPrompt: data.sunoPrompt || data.suno_prompt || "No SUNO prompt generated",

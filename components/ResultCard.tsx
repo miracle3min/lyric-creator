@@ -40,21 +40,49 @@ export default function ResultCard({ result }: ResultCardProps) {
     }
   };
 
+  const handleCopyAll = async () => {
+    try {
+      const allContent = `🎵 ${result.title}\n\n` +
+        `━━━ LYRICS ━━━\n${result.lyrics}\n\n` +
+        `━━━ INSTRUMENTS ━━━\n${result.instruments}\n\n` +
+        `━━━ SUNO PROMPT ━━━\n${result.sunoPrompt}\n\n` +
+        `━━━ COVER ART PROMPT ━━━\n${result.coverArtPrompt}`;
+      await navigator.clipboard.writeText(allContent);
+      toast.success("All content copied!");
+    } catch {
+      toast.error("Failed to copy to clipboard");
+    }
+  };
+
   const isError = content[activeTab]?.startsWith("Error:");
 
   return (
     <div className="card-glass overflow-hidden">
-      {/* Header */}
-      <div className="mb-3 flex items-center justify-between sm:mb-4">
-        <div className="flex items-center gap-2 sm:gap-3">
-          <div className="h-2.5 w-2.5 rounded-full bg-gradient-to-r from-brand-400 to-violet-400 sm:h-3 sm:w-3" />
-          <h3 className="text-base font-bold text-white sm:text-lg">
-            Generated Result
-          </h3>
+      {/* Header with generated title */}
+      <div className="mb-3 sm:mb-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="h-2.5 w-2.5 rounded-full bg-gradient-to-r from-brand-400 to-violet-400 sm:h-3 sm:w-3" />
+            <span className="text-[10px] font-medium uppercase tracking-wider text-brand-400 sm:text-xs">
+              Generated Song
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleCopyAll}
+              className="rounded-lg bg-white/5 px-2 py-1 text-[10px] text-gray-400 transition-all hover:bg-white/10 hover:text-white sm:px-3 sm:py-1.5 sm:text-xs"
+              title="Copy all content"
+            >
+              Copy All
+            </button>
+            <span className="text-[10px] text-gray-500 sm:text-xs">
+              {new Date(result.generatedAt).toLocaleTimeString()}
+            </span>
+          </div>
         </div>
-        <span className="text-[10px] text-gray-500 sm:text-xs">
-          {new Date(result.generatedAt).toLocaleTimeString()}
-        </span>
+        <h3 className="mt-2 text-lg font-bold text-white sm:text-xl md:text-2xl">
+          🎵 {result.title}
+        </h3>
       </div>
 
       {/* Tabs */}

@@ -17,7 +17,6 @@ interface SongFormProps {
 
 export default function SongForm({ onSubmit, isLoading }: SongFormProps) {
   const [form, setForm] = useState<SongRequest>({
-    title: "",
     genre: "Pop",
     mood: "Happy",
     language: "id",
@@ -32,29 +31,12 @@ export default function SongForm({ onSubmit, isLoading }: SongFormProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (!form.title.trim()) return;
     if (!form.description.trim()) return;
-
     onSubmit(form);
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
-      {/* Title */}
-      <div>
-        <label className="label-text">Song Title</label>
-        <input
-          type="text"
-          value={form.title}
-          onChange={(e) => update("title", e.target.value)}
-          placeholder="e.g. Malam di Kota Tua"
-          className="input-field text-sm sm:text-base"
-          required
-          maxLength={200}
-        />
-      </div>
-
       {/* Genre & Mood */}
       <div className="grid grid-cols-2 gap-3 sm:gap-4">
         <div>
@@ -136,12 +118,12 @@ export default function SongForm({ onSubmit, isLoading }: SongFormProps) {
 
       {/* Description */}
       <div>
-        <label className="label-text">Song Description</label>
+        <label className="label-text">Song Theme & Story</label>
         <textarea
           value={form.description}
           onChange={(e) => update("description", e.target.value)}
-          placeholder="Describe the story, theme, or feeling..."
-          rows={3}
+          placeholder="Describe the story, theme, feeling, or message of the song..."
+          rows={4}
           className="input-field resize-none text-sm sm:text-base"
           required
           maxLength={1000}

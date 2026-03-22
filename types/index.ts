@@ -1,5 +1,4 @@
 export interface SongRequest {
-  title: string;
   genre: string;
   mood: string;
   language: "id" | "en";
@@ -9,6 +8,7 @@ export interface SongRequest {
 }
 
 export interface SongResult {
+  title: string;
   lyrics: string;
   instruments: string;
   sunoPrompt: string;
