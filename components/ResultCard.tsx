@@ -2,19 +2,20 @@
 
 import { useState } from "react";
 import { SongResult, PROVIDER_LABELS, PROVIDER_COLORS } from "@/types";
-import { FiCopy, FiCheck, FiMusic, FiCpu, FiTerminal } from "react-icons/fi";
+import { FiCopy, FiCheck, FiMusic, FiCpu, FiTerminal, FiImage } from "react-icons/fi";
 import { toast } from "sonner";
 
 interface ResultCardProps {
   result: SongResult;
 }
 
-type Tab = "lyrics" | "instruments" | "suno";
+type Tab = "lyrics" | "instruments" | "suno" | "coverArt";
 
 const TABS: { key: Tab; label: string; icon: React.ReactNode }[] = [
   { key: "lyrics", label: "Lyrics", icon: <FiMusic /> },
   { key: "instruments", label: "Instruments", icon: <FiCpu /> },
   { key: "suno", label: "SUNO Prompt", icon: <FiTerminal /> },
+  { key: "coverArt", label: "Cover Art", icon: <FiImage /> },
 ];
 
 export default function ResultCard({ result }: ResultCardProps) {
@@ -25,6 +26,7 @@ export default function ResultCard({ result }: ResultCardProps) {
     lyrics: result.lyrics,
     instruments: result.instruments,
     suno: result.sunoPrompt,
+    coverArt: result.coverArtPrompt,
   };
 
   const handleCopy = async (tab: Tab) => {

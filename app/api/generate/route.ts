@@ -25,6 +25,7 @@ async function generateFromProvider(
     lyrics: data.lyrics || "No lyrics generated",
     instruments: data.instruments || "No instrument details generated",
     sunoPrompt: data.sunoPrompt || data.suno_prompt || "No SUNO prompt generated",
+    coverArtPrompt: data.coverArtPrompt || data.cover_art_prompt || "No cover art prompt generated",
     generatedAt: new Date().toISOString(),
   };
 }
@@ -59,6 +60,7 @@ export async function POST(req: NextRequest) {
             lyrics: `Error: ${error.message}`,
             instruments: `Error: ${error.message}`,
             sunoPrompt: `Error: ${error.message}`,
+            coverArtPrompt: `Error: ${error.message}`,
             generatedAt: new Date().toISOString(),
           } as SongResult;
         }
