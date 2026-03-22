@@ -1,7 +1,3 @@
-export type Provider = "gemini" | "groq" | "mistral";
-
-export type GenerateMode = "single" | "multi";
-
 export interface SongRequest {
   title: string;
   genre: string;
@@ -13,7 +9,6 @@ export interface SongRequest {
 }
 
 export interface SongResult {
-  provider: Provider;
   lyrics: string;
   instruments: string;
   sunoPrompt: string;
@@ -23,26 +18,12 @@ export interface SongResult {
 
 export interface GenerateRequest {
   song: SongRequest;
-  mode: GenerateMode;
-  selectedProvider?: Provider;
 }
 
 export interface GenerateResponse {
-  results: SongResult[];
+  result: SongResult;
   error?: string;
 }
-
-export const PROVIDER_LABELS: Record<Provider, string> = {
-  gemini: "Google Gemini",
-  groq: "Groq (LLaMA)",
-  mistral: "Mistral AI",
-};
-
-export const PROVIDER_COLORS: Record<Provider, string> = {
-  gemini: "from-blue-500 to-cyan-500",
-  groq: "from-orange-500 to-amber-500",
-  mistral: "from-violet-500 to-purple-500",
-};
 
 export const GENRES = [
   "Pop", "Rock", "R&B", "Hip-Hop", "Jazz", "Blues", "Country",

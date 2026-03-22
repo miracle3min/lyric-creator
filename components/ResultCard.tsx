@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { SongResult, PROVIDER_LABELS, PROVIDER_COLORS } from "@/types";
+import { SongResult } from "@/types";
 import { FiCopy, FiCheck, FiMusic, FiCpu, FiTerminal, FiImage } from "react-icons/fi";
 import { toast } from "sonner";
 
@@ -40,20 +40,16 @@ export default function ResultCard({ result }: ResultCardProps) {
     }
   };
 
-  const gradientClass = PROVIDER_COLORS[result.provider];
-
   const isError = content[activeTab]?.startsWith("Error:");
 
   return (
     <div className="card-glass overflow-hidden">
-      {/* Provider header */}
+      {/* Header */}
       <div className="mb-3 flex items-center justify-between sm:mb-4">
         <div className="flex items-center gap-2 sm:gap-3">
-          <div
-            className={`h-2.5 w-2.5 rounded-full bg-gradient-to-r sm:h-3 sm:w-3 ${gradientClass}`}
-          />
+          <div className="h-2.5 w-2.5 rounded-full bg-gradient-to-r from-brand-400 to-violet-400 sm:h-3 sm:w-3" />
           <h3 className="text-base font-bold text-white sm:text-lg">
-            {PROVIDER_LABELS[result.provider]}
+            Generated Result
           </h3>
         </div>
         <span className="text-[10px] text-gray-500 sm:text-xs">

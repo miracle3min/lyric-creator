@@ -9,7 +9,7 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "SUNO Lyric Generator — AI-Powered Song Creation",
   description:
-    "Generate song lyrics, instrument details, and SUNO AI prompts using multiple AI providers.",
+    "Generate song lyrics, instrument arrangements, and SUNO AI prompts with AI.",
 };
 
 export const viewport: Viewport = {

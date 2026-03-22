@@ -1,13 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import {
-  SongRequest,
-  SongResult,
-  GenerateMode,
-  Provider,
-  GenerateResponse,
-} from "@/types";
+import { SongRequest, SongResult, GenerateResponse } from "@/types";
 import SongForm from "@/components/SongForm";
 import ResultCard from "@/components/ResultCard";
 import LoadingSkeleton from "@/components/LoadingSkeleton";
@@ -16,23 +10,12 @@ import { toast } from "sonner";
 import { FiMusic } from "react-icons/fi";
 
 export default function Home() {
-  const [results, setResults] = useState<SongResult[]>([]);
+  const [result, setResult] = useState<SongResult | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [activeProviders, setActiveProviders] = useState<Provider[]>([]);
 
-  const handleGenerate = async (
-    song: SongRequest,
-    mode: GenerateMode,
-    provider?: Provider
-  ) => {
+  const handleGenerate = async (song: SongRequest) => {
     setIsLoading(true);
-    setResults([]);
-
-    if (mode === "multi") {
-      setActiveProviders(["gemini", "groq", "mistral"]);
-    } else {
-      setActiveProviders([provider || "gemini"]);
-    }
+    setResult(null);
 
     try {
       const controller = new AbortController();
@@ -41,7 +24,7 @@ export default function Home() {
       const res = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ song, mode, selectedProvider: provider }),
+        body: JSON.stringify({ song }),
         signal: controller.signal,
       });
 
@@ -49,25 +32,21 @@ export default function Home() {
 
       if (!res.ok) {
         const errData = await res.json().catch(() => ({}));
-        throw new Error(
-          errData.error || `Server error (${res.status})`
-        );
+        throw new Error(errData.error || `Server error (${res.status})`);
       }
 
       const data: GenerateResponse = await res.json();
 
-      if (!data.results || data.results.length === 0) {
-        throw new Error("No results returned from AI providers");
+      if (!data.result) {
+        throw new Error("No result returned");
       }
 
-      setResults(data.results);
-      toast.success(
-        `Generated ${data.results.length} result${data.results.length > 1 ? "s" : ""}!`
-      );
+      setResult(data.result);
+      toast.success("Lyrics generated successfully!");
     } catch (error: any) {
       const message =
         error.name === "AbortError"
-          ? "Request timed out. Try again or use Single AI mode."
+          ? "Request timed out. Please try again."
           : error.message || "Something went wrong";
 
       console.error("[Generate]", { message, error });
@@ -111,25 +90,15 @@ export default function Home() {
 
           {/* Right: Results */}
           <section className="space-y-4 sm:space-y-6">
-            {isLoading && <LoadingSkeleton providers={activeProviders} />}
+            {isLoading && <LoadingSkeleton />}
 
-            {!isLoading && results.length > 0 && (
-              <>
-                <div className="flex items-center gap-3">
-                  <h2 className="text-xl font-bold text-white sm:text-2xl">Results</h2>
-                  <span className="rounded-full bg-brand-500/10 px-3 py-1 text-xs font-medium text-brand-400 sm:text-sm">
-                    {results.length} provider{results.length > 1 ? "s" : ""}
-                  </span>
-                </div>
-                <ErrorBoundary>
-                  {results.map((r) => (
-                    <ResultCard key={r.provider} result={r} />
-                  ))}
-                </ErrorBoundary>
-              </>
+            {!isLoading && result && (
+              <ErrorBoundary>
+                <ResultCard result={result} />
+              </ErrorBoundary>
             )}
 
-            {!isLoading && results.length === 0 && (
+            {!isLoading && !result && (
               <div className="flex min-h-[200px] items-center justify-center sm:min-h-[400px]">
                 <div className="text-center">
                   <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-white/5 sm:h-20 sm:w-20">

@@ -3,25 +3,19 @@
 import { useState } from "react";
 import {
   SongRequest,
-  GenerateMode,
-  Provider,
   GENRES,
   MOODS,
   TEMPOS,
   VOCAL_STYLES,
-  PROVIDER_LABELS,
 } from "@/types";
-import { FiMusic, FiZap, FiLayers } from "react-icons/fi";
+import { FiMusic } from "react-icons/fi";
 
 interface SongFormProps {
-  onSubmit: (song: SongRequest, mode: GenerateMode, provider?: Provider) => void;
+  onSubmit: (song: SongRequest) => void;
   isLoading: boolean;
 }
 
 export default function SongForm({ onSubmit, isLoading }: SongFormProps) {
-  const [mode, setMode] = useState<GenerateMode>("multi");
-  const [selectedProvider, setSelectedProvider] = useState<Provider>("gemini");
-
   const [form, setForm] = useState<SongRequest>({
     title: "",
     genre: "Pop",
@@ -42,58 +36,11 @@ export default function SongForm({ onSubmit, isLoading }: SongFormProps) {
     if (!form.title.trim()) return;
     if (!form.description.trim()) return;
 
-    onSubmit(form, mode, mode === "single" ? selectedProvider : undefined);
+    onSubmit(form);
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
-      {/* Mode Toggle */}
-      <div className="flex gap-2 sm:gap-3">
-        <button
-          type="button"
-          onClick={() => setMode("multi")}
-          className={`flex flex-1 items-center justify-center gap-1.5 rounded-xl border px-3 py-2.5 text-xs font-medium transition-all sm:gap-2 sm:px-4 sm:py-3 sm:text-sm ${
-            mode === "multi" ? "tab-active" : "tab-inactive border-white/10"
-          }`}
-        >
-          <FiLayers className="text-base sm:text-lg" />
-          Multi AI
-        </button>
-        <button
-          type="button"
-          onClick={() => setMode("single")}
-          className={`flex flex-1 items-center justify-center gap-1.5 rounded-xl border px-3 py-2.5 text-xs font-medium transition-all sm:gap-2 sm:px-4 sm:py-3 sm:text-sm ${
-            mode === "single" ? "tab-active" : "tab-inactive border-white/10"
-          }`}
-        >
-          <FiZap className="text-base sm:text-lg" />
-          Single AI
-        </button>
-      </div>
-
-      {/* Provider Select (single mode) */}
-      {mode === "single" && (
-        <div>
-          <label className="label-text">AI Provider</label>
-          <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
-            {(Object.keys(PROVIDER_LABELS) as Provider[]).map((p) => (
-              <button
-                key={p}
-                type="button"
-                onClick={() => setSelectedProvider(p)}
-                className={`rounded-xl border px-2 py-2 text-xs font-medium transition-all sm:px-3 sm:py-2.5 sm:text-sm ${
-                  selectedProvider === p
-                    ? "tab-active"
-                    : "tab-inactive border-white/10"
-                }`}
-              >
-                {PROVIDER_LABELS[p]}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-
       {/* Title */}
       <div>
         <label className="label-text">Song Title</label>
@@ -211,9 +158,7 @@ export default function SongForm({ onSubmit, isLoading }: SongFormProps) {
         ) : (
           <>
             <FiMusic className="text-base sm:text-lg" />
-            {mode === "multi"
-              ? "Generate with All 3 AI"
-              : `Generate with ${PROVIDER_LABELS[selectedProvider]}`}
+            Generate Lyrics
           </>
         )}
       </button>
