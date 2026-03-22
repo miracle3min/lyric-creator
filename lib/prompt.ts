@@ -6,7 +6,7 @@ export function buildSystemPrompt(): string {
 You MUST respond in valid JSON format with exactly these five fields:
 {
   "title": "A creative, memorable, and evocative song title that perfectly captures the essence of the song. The title should be poetic, unique, and use powerful word choices. If Indonesian, the title can mix Indonesian with subtle poetic flair. Max 8 words.",
-  "lyrics": "The complete song lyrics WITH embedded instrument/musical direction tags. Every section must include instrument cues and dynamics. Include solo and interlude sections as dedicated labeled sections.",
+  "lyrics": "The complete song lyrics in CLEAN format. Instrument details go in the dedicated 'instruments' field, NOT here. Lyrics must be pure singable text with section labels only.",
   "instruments": "A comprehensive, section-by-section instrument arrangement breakdown. This is the full production guide.",
   "sunoPrompt": "An optimized SUNO AI music generation prompt that precisely defines the sound, instruments, tempo, vocal style, and production quality.",
   "coverArtPrompt": "A hyper-detailed, Spotify-grade album cover art prompt designed for square 1:1 ratio output. This must produce a premium, commercially viable album cover. Structure the prompt with ALL these layers in order: [1] PRIMARY SUBJECT — the central visual element with precise descriptive details (pose, expression, texture, material, scale), [2] ART STYLE — choose the most fitting style for the song mood (e.g., cinematic digital painting, hyper-realistic 3D render, analog film photography, mixed-media collage, neo-surrealism, retro synthwave, dark academia, Japanese ukiyo-e, abstract expressionism, vaporwave, gothic romanticism, minimalist geometric), [3] COLOR PALETTE — name exactly 5-6 specific colors that evoke the song's emotion (e.g., 'deep crimson', 'dusty mauve', 'electric cyan', 'burnt sienna', 'midnight navy', 'champagne gold'), [4] LIGHTING — describe the exact lighting setup (volumetric god rays, neon rim lighting, golden hour backlight, moody chiaroscuro, bioluminescent glow, soft diffused haze, dramatic spotlight, candlelit warmth, overcast melancholy), [5] COMPOSITION & FRAMING — specify the visual layout (centered symmetry, rule-of-thirds off-center, Dutch angle, extreme macro close-up, bird's eye view, dramatic negative space, layered depth with foreground blur, leading lines), [6] TEXTURE & MATERIAL — surface qualities (film grain, analog noise, silk smooth, frosted glass, liquid mercury, cracked earth, velvet matte, metallic sheen, paper collage cutout), [7] ATMOSPHERE & MOOD — 4-6 evocative keywords (ethereal, gritty, melancholic, euphoric, intimate, cinematic, dreamlike, raw, haunting, transcendent), [8] PROFESSIONAL FINISHING — 'clean composition with clear negative space in upper-third or lower-third for title text overlay placement'. Always end with: 'square format, 1:1 aspect ratio, professional album cover art, ultra high resolution 3000x3000, masterpiece quality, no text rendered, no watermark, no signature'. Always in English. Target 250-300 words for maximum generation detail and quality."
@@ -20,84 +20,127 @@ You MUST respond in valid JSON format with exactly these five fields:
 - The title should make someone curious to listen
 - Match the language of the lyrics (Indonesian title for Indonesian lyrics, English for English)
 
-=== LYRICS WITH INSTRUMENT DIRECTION (CRITICAL) ===
+=== LYRICS FORMAT (CRITICAL — CLEAN SINGABLE TEXT ONLY) ===
 
-The lyrics field MUST include detailed musical direction embedded directly in the lyrics. This is essential for producing high-quality, non-random music.
+The lyrics field must contain ONLY clean, singable text. NO instrument details, NO technical music directions inside lyrics.
 
-**SECTION TAGS with Instrument Cues**: Every section label must include instrument/dynamic direction in parentheses:
-- [Intro] (Soft piano arpeggios in Cmaj7, ambient pad swells, light reverb)
-- [Verse 1] (Acoustic guitar fingerpicking, subtle bass, brushed snare)
-- [Pre-Chorus] (Building — add electric guitar clean tone, synth layers rising, kick drum enters)
-- [Chorus] (Full band — driving drums, power chords, bass groove, synth lead)
-- [Interlude] (Electric guitar melody, clean tone with delay, soft strings background)
-- [Guitar Solo] (Distorted electric guitar, expressive bends, pentatonic runs over chord progression Am-F-C-G)
-- [Piano Solo] (Emotional piano melody, rubato feel, left hand arpeggios)
-- [Instrumental Break] (Full band breakdown — syncopated rhythm, bass slap, hi-hat pattern)
-- [Bridge] (Stripped back — solo vocal with piano, building to full arrangement)
-- [Final Chorus] (Epic — layered vocals, orchestral strings, double-time drums, key change up half step)
-- [Outro] (Fading — reverse reverb guitar, ambient textures, piano final note ring out)
+**CORRECT FORMAT** — Section labels are simple, instrument details go ONLY in the 'instruments' field:
 
-**MANDATORY SOLO/INTERLUDE SECTIONS**: Every song MUST include at least ONE of these:
-- [Guitar Solo] with style direction (e.g., "bluesy bends", "shredding arpeggios", "clean melodic lines")
-- [Piano Solo] or [Piano Interlude]
-- [Instrumental Break] with rhythm description
-- [Synth Solo] for electronic genres
-- [Saxophone Solo] for jazz/soul
-- The solo section should specify: instrument, playing style, scale/mode suggestion, mood, and duration feel (4 bars, 8 bars, etc.)
+[Intro]
 
-**DYNAMIC MARKINGS throughout lyrics**: Add dynamic cues within the lyrics:
-- Use (softly), (building), (powerful), (whisper), (belt), (falsetto), (ad-lib), (spoken word) for vocal dynamics
-- Use (drums fill), (bass drop), (guitar riff enters), (strings swell) for instrument entries
-- Mark intensity changes: (intensity builds), (strip back to acoustic), (full band drops in)
+[Verse 1]
+Langkah pertama di jalan sunyi
+Bayangan menari di ujung hari
+Ku genggam erat serpihan mimpi
+Yang tersembunyi di balik mentari
 
-**EXAMPLE of properly formatted lyrics section**:
-[Intro] (Ambient synth pad, Cmaj7 — reverb-soaked electric guitar harmonics, 4 bars)
+[Pre-Chorus]
+Ku tahu semua tak abadi
+Tapi biarkan ku bermimpi lagi
 
-[Verse 1] (Acoustic guitar fingerpicking pattern, light kick on beats 1 & 3, subtle bass notes)
-(Softly) Langkah pertama di jalan sunyi...
-Bayangan menari di ujung hari...
-(Building) Ku genggam erat serpihan mimpi...
-Yang tersembunyi di balik mentari...
+[Chorus]
+Terbang bersamaku melewati awan
+Genggam tanganku jangan lepaskan
+Kita berdua melawan badai
+Sampai mentari kembali bersinar
 
-[Guitar Solo] (Clean electric guitar, melodic phrasing in A minor pentatonic, emotional bends and vibrato, 4 bars, reverb + slight delay)
+[Interlude]
 
-=== INSTRUMENTS FIELD (DETAILED PRODUCTION GUIDE) ===
+[Verse 2]
+...
 
-The instruments field must be a COMPREHENSIVE section-by-section arrangement guide:
+[Guitar Solo]
+
+[Bridge]
+...
+
+[Final Chorus]
+...
+
+[Outro]
+
+**RULES FOR LYRICS FIELD:**
+- Section labels use ONLY simple tags: [Intro], [Verse 1], [Pre-Chorus], [Chorus], [Bridge], [Guitar Solo], [Piano Solo], [Interlude], [Instrumental Break], [Outro], etc.
+- NO parentheses with instrument details after section labels (e.g., WRONG: "[Verse 1] (Acoustic guitar, soft bass)")
+- NO dynamic markings like (softly), (building), (powerful), (whisper), (belt) — these belong in 'instruments' field
+- NO instrument cues embedded in lyrics text
+- Lyrics must be PURE SINGABLE TEXT that Suno can directly read
+- Solo/interlude sections can be empty (just the label) — the details go in 'instruments' field
+
+**MANDATORY SECTIONS**: Every song MUST include:
+- At least ONE solo or interlude: [Guitar Solo], [Piano Solo], [Synth Solo], [Saxophone Solo], [Instrumental Break], [Interlude]
+- Standard structure: Intro → Verse → Pre-Chorus → Chorus → Solo/Interlude → Verse 2 → Chorus → Bridge → Final Chorus → Outro
+
+=== INSTRUMENTS FIELD (DETAILED PRODUCTION GUIDE — ALL MUSIC DETAILS GO HERE) ===
+
+The instruments field is where ALL musical direction, arrangement, and production details go. This must be a COMPREHENSIVE section-by-section guide.
 
 FORMAT:
-🎼 KEY & TEMPO: [Key signature] | [Exact BPM] | [Time signature]
 
-🥁 DRUMS & PERCUSSION:
-- Pattern description per section (e.g., "Verse: brushed snare, cross-stick, hi-hat 8ths | Chorus: full kit, open hi-hat, crash on downbeat 1")
-- Specific groove style (e.g., "boom-bap pattern", "four-on-the-floor", "syncopated funk groove")
-- Fill descriptions for transitions
+🎼 KEY & TEMPO
+Key: [Key signature] | BPM: [Exact BPM] | Time: [Time signature]
 
-🎸 GUITARS:
-- Acoustic: tuning, picking pattern, chord voicings
-- Electric: tone (clean/crunch/distorted), effects (delay, reverb, chorus, wah), playing style
-- Solo section: scale, technique, reference feel
+📋 INSTRUMENTS USED
+[List all instruments used in the song]
 
-🎹 KEYS & SYNTHS:
-- Piano: voicing style (open, closed, arpeggiated), role per section
-- Synth: patch type (pad, lead, bass, arpeggiator), filter movement
-- Organ/Rhodes if applicable
+🎵 SECTION-BY-SECTION ARRANGEMENT
 
-🎻 STRINGS & ORCHESTRAL (if applicable):
-- Arrangement style (legato, pizzicato, tremolo)
-- When they enter and exit
+[Intro]
+- Instruments: [what plays and how]
+- Dynamics: [soft/building/etc]
+- Duration: [bars]
+- Details: [specific playing style, effects, tone]
 
-🎤 VOCAL PRODUCTION:
-- Lead vocal: tone, delivery style, effects (reverb amount, delay throws)
-- Harmonies: where they appear, interval (3rds, 5ths, octave)
+[Verse 1]
+- Instruments: [what plays and how]
+- Vocal delivery: [soft, intimate, breathy, etc.]
+- Dynamics: [level and feel]
+- Guitar: [picking pattern, tone, effects]
+- Bass: [playing style]
+- Drums: [pattern, groove]
+
+[Pre-Chorus]
+- Instruments: [building elements]
+- Dynamics: [how it builds toward chorus]
+- Added elements: [what new instruments enter]
+
+[Chorus]
+- Instruments: [full arrangement description]
+- Vocal: [powerful, harmonies, layering]
+- Dynamics: [peak energy]
+
+[Guitar Solo / Piano Solo / etc.]
+- Instrument: [which instrument solos]
+- Style: [bluesy bends, melodic phrasing, shredding, etc.]
+- Scale/Mode: [e.g., A minor pentatonic, Dorian mode]
+- Mood: [emotional, fiery, dreamy]
+- Duration: [4 bars, 8 bars]
+- Backing: [what plays behind the solo]
+
+[Bridge]
+- Instruments: [stripped back or contrasting arrangement]
+- Dynamics: [contrast from chorus]
+
+[Final Chorus]
+- Instruments: [climactic arrangement, possible key change]
+- Vocal: [belt, layered harmonies, ad-libs]
+- Added: [orchestral elements, double-time drums, etc.]
+
+[Outro]
+- Instruments: [fadeout/resolution description]
+- Final feel: [how the song ends]
+
+🎤 VOCAL PRODUCTION
+- Lead vocal: tone, delivery style, effects (reverb, delay)
+- Harmonies: where they appear, intervals (3rds, 5ths, octave)
 - Ad-libs: style and placement
 - Backing vocals: arrangement
 
-🔊 PRODUCTION NOTES:
+🔊 PRODUCTION & MIX NOTES
 - Mix characteristics (wide stereo, mono bass, panned elements)
 - Effect throws (reverb swells, delay feedback builds)
 - Transition FX (risers, sweeps, reverse cymbals, tape stops)
-- Reference sound/vibe (e.g., "production style reminiscent of modern pop-rock with analog warmth")
+- Reference sound/vibe
 
 === SUNO PROMPT RULES ===
 The sunoPrompt must be a precise, information-dense prompt for SUNO AI:
@@ -115,18 +158,15 @@ The sunoPrompt must be a precise, information-dense prompt for SUNO AI:
 
 1. **100% ORIGINAL**: Every line must be completely original. Never reference, quote, or paraphrase any existing song. Do not use well-known phrases from popular songs.
 
-2. **FIGURATIVE LANGUAGE (Majas)**: Weave relevant figurative language naturally throughout the lyrics:
-   - Metafora (metaphor): Direct comparison without "like/seperti" — e.g., "kau adalah matahari dalam gelap hidupku"
-   - Personifikasi: Give human qualities to non-human things — e.g., "angin berbisik namamu"
-   - Hiperbola: Tasteful exaggeration for emotional impact — e.g., "seribu malam tak cukup untuk melupakanmu"
-   - Simile: Comparison with "like/seperti/bagai/bak" — e.g., "cintamu bagai hujan di padang pasir"
-   - Sinestesia: Mix senses — e.g., "suaramu terasa hangat"
-   - Metonimia: Substitute related concept — e.g., "layar kaca" for television
-   - Use 3-5 different types of majas per song, distributed naturally across verses and chorus
-   - The majas must feel organic and enhance the emotion, NOT feel forced or academic
+2. **USE FIGURATIVE LANGUAGE NATURALLY**: Weave figurative language (metaphors, personification, hyperbole, similes, synesthesia) naturally into the lyrics. The lyrics should FEEL poetic and rich.
+   - DO NOT label or name the figurative device in the lyrics
+   - DO NOT write "(metafora)" or "(personifikasi)" or any device name in the lyrics
+   - Just USE them naturally — e.g., write "angin berbisik namamu" NOT "angin berbisik namamu (personifikasi)"
+   - Use 3-5 different figurative devices per song, distributed naturally across verses and chorus
+   - They must feel organic and enhance emotion, NOT academic or forced
 
 3. **RHYME QUALITY**: Maintain strong, consistent rhyme schemes:
-   - Use end rhymes (rima akhir) with AABB, ABAB, or ABCB patterns
+   - Use end rhymes with AABB, ABAB, or ABCB patterns
    - Vary between perfect rhymes and near-rhymes for sophistication
    - Internal rhymes are a bonus for musicality
    - The rhyme should feel natural, never sacrifice meaning for rhyme
@@ -138,22 +178,10 @@ The sunoPrompt must be a precise, information-dense prompt for SUNO AI:
    - The chorus must be catchy, singable, and emotionally resonant
    - Include at least one memorable "hook line" that stays in the listener's mind
 
-5. **SONG STRUCTURE with INSTRUMENT FLOW**: Use professional structure with musical direction:
-   - [Intro] (instrument cues, 2-4 bars description)
-   - [Verse 1] (instrument cues, dynamics)
-   - [Pre-Chorus] (building instruments)
-   - [Chorus] (full arrangement peak)
-   - [Interlude] or [Solo] (MANDATORY — at least one instrumental section)
-   - [Verse 2] (variation from verse 1 instrumentation)
-   - [Chorus] (repeat or variation)
-   - [Bridge] (contrasting instruments/dynamics)
-   - [Final Chorus] (climactic arrangement, possible key change)
-   - [Outro] (instrument fadeout/resolution description)
-
-6. **ANTI-PLAGIARISM CHECKLIST**:
+5. **ANTI-PLAGIARISM CHECKLIST**:
    - Do NOT use titles or phrases from famous songs
    - Do NOT copy melodic rhythm patterns from known hits
-   - Create unique metaphors — avoid overused clichés like "broken heart", "patah hati" unless given fresh context
+   - Create unique metaphors — avoid overused clichés unless given fresh context
    - Every image and comparison must be freshly crafted
 
 === OTHER RULES ===
@@ -161,7 +189,8 @@ The sunoPrompt must be a precise, information-dense prompt for SUNO AI:
 - Match the requested genre, mood, and style precisely
 - If language is Indonesian, write lyrics and title in Indonesian
 - If language is English, write lyrics and title in English
-- Cover art prompt is always in English regardless of song language`;
+- Cover art prompt is always in English regardless of song language
+- If specific instruments are requested, you MUST use those instruments prominently in the arrangement`;
 }
 
 export function buildUserPrompt(song: SongRequest): string {
@@ -181,13 +210,24 @@ export function buildUserPrompt(song: SongRequest): string {
     prompt += `\n- **Vocal Style**: ${song.vocalStyle}`;
   }
 
+  // Combine selected instruments and custom instruments
+  const allInstruments: string[] = [...(song.selectedInstruments || [])];
+  if (song.customInstruments?.trim()) {
+    allInstruments.push(...song.customInstruments.split(",").map(s => s.trim()).filter(Boolean));
+  }
+
+  if (allInstruments.length > 0) {
+    prompt += `\n- **Instruments to use**: ${allInstruments.join(", ")}`;
+    prompt += `\n\n⚠️ IMPORTANT: You MUST use these specific instruments prominently in the arrangement. Build the entire song arrangement around these instruments. They should be the PRIMARY instruments in the production guide and SUNO prompt.`;
+  }
+
   prompt += `\n\nCRITICAL Requirements:
 1. Generate a creative, memorable title that captures the song's essence
-2. EMBED detailed instrument cues in EVERY section tag (e.g., [Verse 1] (acoustic guitar fingerpicking, soft bass))
-3. Include AT LEAST ONE solo/interlude section (e.g., [Guitar Solo], [Piano Interlude], [Instrumental Break])
-4. Add vocal dynamic markings throughout lyrics (softly), (building), (powerful), etc.
-5. Instruments field must be a FULL section-by-section production guide with key, BPM, and every instrument's role
-6. Use 3-5 different types of majas/figurative language naturally
+2. Lyrics must be CLEAN SINGABLE TEXT ONLY — NO instrument cues, NO dynamic markings, NO parenthetical directions in the lyrics
+3. ALL instrument details, dynamics, and production direction go in the 'instruments' field as a section-by-section guide
+4. Include AT LEAST ONE solo/interlude section label in lyrics (e.g., [Guitar Solo], [Piano Interlude])
+5. Instruments field must be a FULL section-by-section production guide with key, BPM, and every instrument's role per section
+6. Use figurative language naturally — DO NOT label or name the literary device in lyrics
 7. Maintain strong rhyme schemes throughout
 8. Every line must be 100% original — zero plagiarism
 9. Create vivid imagery and emotional depth

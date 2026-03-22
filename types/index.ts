@@ -5,6 +5,8 @@ export interface SongRequest {
   description: string;
   tempo?: string;
   vocalStyle?: string;
+  selectedInstruments: string[];
+  customInstruments?: string;
 }
 
 export interface SongResult {
@@ -43,4 +45,12 @@ export const TEMPOS = [
 export const VOCAL_STYLES = [
   "Male Vocal", "Female Vocal", "Duet", "Choir",
   "Whisper", "Raspy", "Falsetto", "No Vocal (Instrumental)",
+];
+
+export const INSTRUMENTS = [
+  "Acoustic Guitar", "Electric Guitar", "Bass Guitar", "Piano",
+  "Keyboard/Synth", "Drums", "Violin", "Cello", "Saxophone",
+  "Trumpet", "Flute", "Ukulele", "Harmonica", "Cajon",
+  "Tabla", "Gamelan", "Kendang", "Suling", "Angklung",
+  "Harp", "Organ", "Banjo", "Mandolin", "Sitar",
 ];
