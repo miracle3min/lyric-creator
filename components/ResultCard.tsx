@@ -11,11 +11,11 @@ interface ResultCardProps {
 
 type Tab = "lyrics" | "instruments" | "suno" | "coverArt";
 
-const TABS: { key: Tab; label: string; icon: React.ReactNode }[] = [
-  { key: "lyrics", label: "Lyrics", icon: <FiMusic /> },
-  { key: "instruments", label: "Instruments", icon: <FiCpu /> },
-  { key: "suno", label: "SUNO Prompt", icon: <FiTerminal /> },
-  { key: "coverArt", label: "Cover Art", icon: <FiImage /> },
+const TABS: { key: Tab; label: string; shortLabel: string; icon: React.ReactNode }[] = [
+  { key: "lyrics", label: "Lyrics", shortLabel: "Lyrics", icon: <FiMusic /> },
+  { key: "instruments", label: "Instruments", shortLabel: "Instr.", icon: <FiCpu /> },
+  { key: "suno", label: "SUNO Prompt", shortLabel: "SUNO", icon: <FiTerminal /> },
+  { key: "coverArt", label: "Cover Art", shortLabel: "Cover", icon: <FiImage /> },
 ];
 
 export default function ResultCard({ result }: ResultCardProps) {
@@ -30,67 +30,80 @@ export default function ResultCard({ result }: ResultCardProps) {
   };
 
   const handleCopy = async (tab: Tab) => {
-    await navigator.clipboard.writeText(content[tab]);
-    setCopied(tab);
-    toast.success(`${TABS.find((t) => t.key === tab)?.label} copied!`);
-    setTimeout(() => setCopied(null), 2000);
+    try {
+      await navigator.clipboard.writeText(content[tab]);
+      setCopied(tab);
+      toast.success(`${TABS.find((t) => t.key === tab)?.label} copied!`);
+      setTimeout(() => setCopied(null), 2000);
+    } catch {
+      toast.error("Failed to copy to clipboard");
+    }
   };
 
   const gradientClass = PROVIDER_COLORS[result.provider];
 
+  const isError = content[activeTab]?.startsWith("Error:");
+
   return (
     <div className="card-glass overflow-hidden">
       {/* Provider header */}
-      <div className="mb-4 flex items-center justify-between">
-        <div className="flex items-center gap-3">
+      <div className="mb-3 flex items-center justify-between sm:mb-4">
+        <div className="flex items-center gap-2 sm:gap-3">
           <div
-            className={`h-3 w-3 rounded-full bg-gradient-to-r ${gradientClass}`}
+            className={`h-2.5 w-2.5 rounded-full bg-gradient-to-r sm:h-3 sm:w-3 ${gradientClass}`}
           />
-          <h3 className="text-lg font-bold text-white">
+          <h3 className="text-base font-bold text-white sm:text-lg">
             {PROVIDER_LABELS[result.provider]}
           </h3>
         </div>
-        <span className="text-xs text-gray-500">
+        <span className="text-[10px] text-gray-500 sm:text-xs">
           {new Date(result.generatedAt).toLocaleTimeString()}
         </span>
       </div>
 
       {/* Tabs */}
-      <div className="mb-4 flex gap-1 rounded-xl bg-white/5 p-1">
+      <div className="mb-3 flex gap-0.5 overflow-x-auto rounded-xl bg-white/5 p-1 sm:mb-4 sm:gap-1">
         {TABS.map((tab) => (
           <button
             key={tab.key}
             onClick={() => setActiveTab(tab.key)}
-            className={`flex flex-1 items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium transition-all ${
+            className={`flex flex-1 items-center justify-center gap-1 whitespace-nowrap rounded-lg px-2 py-1.5 text-xs font-medium transition-all sm:gap-1.5 sm:px-3 sm:py-2 sm:text-sm ${
               activeTab === tab.key
                 ? "bg-white/10 text-white"
                 : "text-gray-500 hover:text-gray-300"
             }`}
           >
             {tab.icon}
-            {tab.label}
+            <span className="hidden sm:inline">{tab.label}</span>
+            <span className="sm:hidden">{tab.shortLabel}</span>
           </button>
         ))}
       </div>
 
       {/* Content */}
       <div className="relative">
-        <pre className="max-h-[400px] overflow-auto whitespace-pre-wrap rounded-xl bg-black/30 p-4 text-sm leading-relaxed text-gray-300">
-          {content[activeTab]}
+        <pre
+          className={`max-h-[300px] overflow-auto whitespace-pre-wrap rounded-xl bg-black/30 p-3 text-xs leading-relaxed sm:max-h-[400px] sm:p-4 sm:text-sm ${
+            isError ? "text-red-400" : "text-gray-300"
+          }`}
+        >
+          {content[activeTab] || "No content available"}
         </pre>
 
         {/* Copy button */}
-        <button
-          onClick={() => handleCopy(activeTab)}
-          className="absolute right-3 top-3 rounded-lg bg-white/10 p-2 text-gray-400 transition-all hover:bg-white/20 hover:text-white"
-          title="Copy to clipboard"
-        >
-          {copied === activeTab ? (
-            <FiCheck className="text-green-400" />
-          ) : (
-            <FiCopy />
-          )}
-        </button>
+        {!isError && content[activeTab] && (
+          <button
+            onClick={() => handleCopy(activeTab)}
+            className="absolute right-2 top-2 rounded-lg bg-white/10 p-1.5 text-gray-400 transition-all hover:bg-white/20 hover:text-white sm:right-3 sm:top-3 sm:p-2"
+            title="Copy to clipboard"
+          >
+            {copied === activeTab ? (
+              <FiCheck className="text-green-400" />
+            ) : (
+              <FiCopy />
+            )}
+          </button>
+        )}
       </div>
     </div>
   );
