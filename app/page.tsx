@@ -8,6 +8,7 @@ import LoadingSkeleton from "@/components/LoadingSkeleton";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import { toast } from "sonner";
 import { FiMusic } from "react-icons/fi";
+import UserMenu from "@/components/UserMenu";
 
 export default function Home() {
   const [result, setResult] = useState<SongResult | null>(null);
@@ -67,14 +68,22 @@ export default function Home() {
 
       <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
         {/* Header */}
-        <header className="mb-8 text-center sm:mb-12">
-          <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-brand-500/20 bg-brand-500/10 px-3 py-1 text-xs font-medium text-brand-400 sm:mb-4 sm:px-4 sm:py-1.5 sm:text-sm">
-            <FiMusic />
-            AI-Powered Song Creation
+        <header className="mb-8 sm:mb-12">
+          <div className="flex items-start justify-between">
+            <div className="flex-1" />
+            <div className="flex-1 text-center">
+              <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-brand-500/20 bg-brand-500/10 px-3 py-1 text-xs font-medium text-brand-400 sm:mb-4 sm:px-4 sm:py-1.5 sm:text-sm">
+                <FiMusic />
+                AI-Powered Song Creation
+              </div>
+              <h1 className="bg-gradient-to-r from-white via-brand-200 to-violet-300 bg-clip-text text-3xl font-extrabold tracking-tight text-transparent sm:text-5xl lg:text-6xl">
+                SUNO Lyric Generator
+              </h1>
+            </div>
+            <div className="flex flex-1 justify-end">
+              <UserMenu />
+            </div>
           </div>
-          <h1 className="bg-gradient-to-r from-white via-brand-200 to-violet-300 bg-clip-text text-3xl font-extrabold tracking-tight text-transparent sm:text-5xl lg:text-6xl">
-            SUNO Lyric Generator
-          </h1>
         </header>
 
         <div className="grid gap-6 sm:gap-8 lg:grid-cols-[400px_1fr]">

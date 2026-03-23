@@ -16,6 +16,8 @@ export async function initDb() {
   await sql`
     CREATE TABLE IF NOT EXISTS generations (
       id SERIAL PRIMARY KEY,
+      user_id TEXT,
+      user_email TEXT,
       genre VARCHAR(100),
       mood VARCHAR(100),
       language VARCHAR(50),
@@ -56,18 +58,22 @@ export async function saveGeneration(
     sunoPrompt: string;
     coverArtPrompt: string;
   },
-  provider: string = "gemini"
+  provider: string = "gemini",
+  user?: { id?: string; email?: string } | null
 ) {
   const sql = getDb();
 
   try {
     const rows = await sql`
       INSERT INTO generations (
+        user_id, user_email,
         genre, mood, language, tempo, vocal_style,
         instruments_input, description,
         title, lyrics, instruments_output,
         suno_prompt, cover_art_prompt, provider
       ) VALUES (
+        ${user?.id ?? null},
+        ${user?.email ?? null},
         ${request.genre ?? null},
         ${request.mood ?? null},
         ${request.language ?? null},
@@ -97,8 +103,18 @@ export async function saveGeneration(
 /**
  * Get recent generations.
  */
-export async function getGenerations(limit: number = 20) {
+export async function getGenerations(limit: number = 20, userId?: string) {
   const sql = getDb();
+
+  if (userId) {
+    const rows = await sql`
+      SELECT * FROM generations
+      WHERE user_id = ${userId}
+      ORDER BY created_at DESC
+      LIMIT ${limit}
+    `;
+    return rows;
+  }
 
   const rows = await sql`
     SELECT * FROM generations

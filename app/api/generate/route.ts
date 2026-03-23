@@ -3,6 +3,7 @@ import { GenerateRequest, SongResult } from "@/types";
 import { generateWithGemini } from "@/lib/providers/gemini";
 import { initDb, saveGeneration } from "@/lib/db";
 import { logger } from "@/lib/logger";
+import { auth } from "@/lib/auth/server";
 
 let dbInitialized = false;
 
@@ -51,9 +52,20 @@ export async function POST(req: NextRequest) {
       generatedAt: new Date().toISOString(),
     };
 
+    // Get current user from session
+    let user: { id?: string; email?: string } | null = null;
+    try {
+      const { data: session } = await auth.getSession({ headers: req.headers });
+      if (session?.user) {
+        user = { id: session.user.id, email: session.user.email };
+      }
+    } catch (e) {
+      // Session extraction is non-blocking
+    }
+
     // Save to DB (non-blocking, won't fail the request)
     if (process.env.DATABASE_URL) {
-      saveGeneration(song, result, "gemini").catch(() => {});
+      saveGeneration(song, result, "gemini", user).catch(() => {});
     }
 
     return NextResponse.json({ result });
