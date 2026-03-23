@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { GenerateRequest, SongResult } from "@/types";
 import { generateWithGemini } from "@/lib/providers/gemini";
+import { initDb, saveGeneration } from "@/lib/db";
 import { logger } from "@/lib/logger";
+
+let dbInitialized = false;
 
 export async function POST(req: NextRequest) {
   const requestId = crypto.randomUUID().slice(0, 8);
@@ -23,6 +26,16 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Lazy-init DB tables
+    if (!dbInitialized && process.env.DATABASE_URL) {
+      try {
+        await initDb();
+        dbInitialized = true;
+      } catch (e: any) {
+        logger.warn(`DB init skipped: ${e.message}`, "API");
+      }
+    }
+
     const startTime = Date.now();
     const data = await generateWithGemini(song);
     const duration = Date.now() - startTime;
@@ -37,6 +50,11 @@ export async function POST(req: NextRequest) {
       coverArtPrompt: data.coverArtPrompt || data.cover_art_prompt || "No cover art prompt generated",
       generatedAt: new Date().toISOString(),
     };
+
+    // Save to DB (non-blocking, won't fail the request)
+    if (process.env.DATABASE_URL) {
+      saveGeneration(song, result, "gemini").catch(() => {});
+    }
 
     return NextResponse.json({ result });
   } catch (error: any) {
