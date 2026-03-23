@@ -1,62 +1,60 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { authClient } from '@/lib/auth/client';
-import { FiMusic } from 'react-icons/fi';
+import { useState } from "react";
+import { signIn } from "@/lib/auth/client";
 
 export default function LoginPage() {
-  const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleGoogleSignIn = async () => {
-    setIsLoading(true);
+    setLoading(true);
+    setError("");
     try {
-      await authClient.signIn.social({
-        provider: 'google',
-        callbackURL: '/',
+      await signIn.social({
+        provider: "google",
+        callbackURL: "/",
       });
-    } catch (error) {
-      console.error('Google sign-in error:', error);
-      setIsLoading(false);
+    } catch (err) {
+      console.error("Google sign-in error:", err);
+      setError("Failed to sign in. Please try again.");
+      setLoading(false);
     }
   };
 
   return (
-    <main className="min-h-screen min-h-[100dvh] flex items-center justify-center">
-      {/* Background gradient */}
-      <div className="fixed inset-0 -z-10">
-        <div className="absolute inset-0 bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950" />
-        <div className="absolute left-1/4 top-0 h-[500px] w-[500px] rounded-full bg-brand-500/5 blur-[120px]" />
-        <div className="absolute bottom-0 right-1/4 h-[500px] w-[500px] rounded-full bg-violet-500/5 blur-[120px]" />
-      </div>
-
-      <div className="w-full max-w-md px-4">
-        <div className="card-glass p-8 text-center">
-          {/* Logo / Header */}
-          <div className="mb-6">
-            <div className="mx-auto mb-4 inline-flex items-center gap-2 rounded-full border border-brand-500/20 bg-brand-500/10 px-4 py-1.5 text-sm font-medium text-brand-400">
-              <FiMusic />
-              AI-Powered Song Creation
-            </div>
-            <h1 className="bg-gradient-to-r from-white via-brand-200 to-violet-300 bg-clip-text text-3xl font-extrabold tracking-tight text-transparent sm:text-4xl">
-              SUNO Lyric Generator
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-purple-950 to-gray-900 px-4">
+      <div className="w-full max-w-md">
+        <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 shadow-2xl">
+          {/* Logo */}
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+              🎵 SUNO Lyric Generator
             </h1>
-            <p className="mt-3 text-sm text-gray-400">
-              Sign in to start creating amazing lyrics
+            <p className="text-gray-400 mt-2">
+              Sign in to create amazing lyrics
             </p>
           </div>
 
-          {/* Google Sign-In Button */}
+          {/* Error */}
+          {error && (
+            <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 text-sm text-center">
+              {error}
+            </div>
+          )}
+
+          {/* Google Sign In */}
           <button
             onClick={handleGoogleSignIn}
-            disabled={isLoading}
-            className="group relative flex w-full items-center justify-center gap-3 rounded-xl border border-white/10 bg-white/5 px-6 py-3.5 text-sm font-semibold text-white transition-all hover:border-white/20 hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-50"
+            disabled={loading}
+            className="w-full flex items-center justify-center gap-3 px-6 py-3 bg-white text-gray-900 font-medium rounded-xl hover:bg-gray-100 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
           >
-            {isLoading ? (
-              <div className="h-5 w-5 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+            {loading ? (
+              <div className="w-5 h-5 border-2 border-gray-400 border-t-gray-800 rounded-full animate-spin" />
             ) : (
-              <svg className="h-5 w-5" viewBox="0 0 24 24">
+              <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path
-                  d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"
+                  d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"
                   fill="#4285F4"
                 />
                 <path
@@ -73,14 +71,14 @@ export default function LoginPage() {
                 />
               </svg>
             )}
-            {isLoading ? 'Signing in...' : 'Continue with Google'}
+            {loading ? "Signing in..." : "Continue with Google"}
           </button>
 
-          <p className="mt-6 text-xs text-gray-500">
-            By signing in, you agree to our Terms of Service
+          <p className="text-center text-gray-500 text-xs mt-6">
+            By signing in, you agree to our terms of use
           </p>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

@@ -3,7 +3,7 @@ import { GenerateRequest, SongResult } from "@/types";
 import { generateWithGemini } from "@/lib/providers/gemini";
 import { initDb, saveGeneration } from "@/lib/db";
 import { logger } from "@/lib/logger";
-import { auth } from "@/lib/auth/server";
+import { getSession } from "@/lib/auth/server";
 
 let dbInitialized = false;
 
@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
     // Get current user from session
     let user: { id?: string; email?: string } | null = null;
     try {
-      const { data: session } = await auth.getSession({ headers: req.headers });
+      const session = await getSession();
       if (session?.user) {
         user = { id: session.user.id, email: session.user.email };
       }
