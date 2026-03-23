@@ -1,10 +1,9 @@
 import { betterAuth } from "better-auth";
-import { Pool } from "pg";
+import { Pool } from "@neondatabase/serverless";
 
 export const auth = betterAuth({
   database: new Pool({
     connectionString: process.env.DATABASE_URL,
-    ssl: { rejectUnauthorized: false },
   }),
   secret: process.env.BETTER_AUTH_SECRET,
   baseURL: process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
