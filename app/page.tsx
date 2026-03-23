@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { SongRequest, SongResult, GenerateResponse } from "@/types";
 import SongForm from "@/components/SongForm";
 import ResultCard from "@/components/ResultCard";
@@ -9,10 +10,20 @@ import ErrorBoundary from "@/components/ErrorBoundary";
 import { toast } from "sonner";
 import { FiMusic } from "react-icons/fi";
 import UserMenu from "@/components/UserMenu";
+import { useSession } from "@/lib/auth/client";
 
 export default function Home() {
+  const router = useRouter();
+  const { data: session, isPending } = useSession();
   const [result, setResult] = useState<SongResult | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  // Redirect unverified users
+  useEffect(() => {
+    if (!isPending && session?.user && !session.user.emailVerified) {
+      router.replace("/verify-email");
+    }
+  }, [session, isPending, router]);
 
   const handleGenerate = async (song: SongRequest) => {
     setIsLoading(true);

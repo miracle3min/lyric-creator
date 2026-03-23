@@ -3,8 +3,12 @@ import { NextRequest, NextResponse } from "next/server";
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Skip auth routes and login page
-  if (pathname.startsWith("/api/auth") || pathname === "/login") {
+  // Skip auth routes, login, and verify-email pages
+  if (
+    pathname.startsWith("/api/auth") ||
+    pathname === "/login" ||
+    pathname === "/verify-email"
+  ) {
     return NextResponse.next();
   }
 
@@ -23,5 +27,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/", "/api/generate", "/api/history"],
+  matcher: ["/", "/api/generate", "/api/history", "/profile", "/history", "/verify-email"],
 };
