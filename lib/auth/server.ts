@@ -1,67 +1,45 @@
-import { cookies } from "next/headers";
+import { betterAuth } from "better-auth";
+import { Pool } from "pg";
 
-const NEON_AUTH_BASE_URL = process.env.NEON_AUTH_BASE_URL!;
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false },
+});
 
-// Proxy handler for auth API routes
-export async function handleAuthRequest(request: Request, path: string) {
-  const url = new URL(request.url);
-  const targetUrl = `${NEON_AUTH_BASE_URL}/${path}${url.search}`;
+export const auth = betterAuth({
+  database: {
+    type: "postgres",
+    pool,
+  },
+  secret: process.env.BETTER_AUTH_SECRET,
+  baseURL: process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
+  basePath: "/api/auth",
+  socialProviders: {
+    google: {
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    },
+  },
+  session: {
+    cookieCache: {
+      enabled: true,
+      maxAge: 5 * 60, // 5 minutes
+    },
+  },
+});
 
-  const headers = new Headers();
-  headers.set("Content-Type", request.headers.get("Content-Type") || "application/json");
-
-  // Forward cookies for session management
-  const cookieHeader = request.headers.get("cookie");
-  if (cookieHeader) {
-    headers.set("cookie", cookieHeader);
-  }
-
-  const fetchOptions: RequestInit = {
-    method: request.method,
-    headers,
-    redirect: "manual",
-  };
-
-  if (request.method !== "GET" && request.method !== "HEAD") {
-    try {
-      fetchOptions.body = await request.text();
-    } catch {
-      // No body
-    }
-  }
-
-  const response = await fetch(targetUrl, fetchOptions);
-
-  // Forward response with all headers (especially Set-Cookie)
-  const responseHeaders = new Headers();
-  response.headers.forEach((value, key) => {
-    responseHeaders.append(key, value);
-  });
-
-  return new Response(response.body, {
-    status: response.status,
-    statusText: response.statusText,
-    headers: responseHeaders,
-  });
-}
-
-// Get current session from Neon Auth
+// Helper to get session from request headers
 export async function getSession() {
   try {
-    const cookieStore = cookies();
-    const cookieHeader = cookieStore
-      .getAll()
-      .map((c) => `${c.name}=${c.value}`)
-      .join("; ");
+    const { headers } = await import("next/headers");
+    const headersList = headers();
+    const cookieHeader = headersList.get("cookie") || "";
 
-    const res = await fetch(`${NEON_AUTH_BASE_URL}/get-session`, {
-      headers: { cookie: cookieHeader },
-      cache: "no-store",
+    const response = await auth.api.getSession({
+      headers: new Headers({ cookie: cookieHeader }),
     });
 
-    if (!res.ok) return null;
-    const data = await res.json();
-    return data?.session ? data : null;
+    return response;
   } catch {
     return null;
   }
