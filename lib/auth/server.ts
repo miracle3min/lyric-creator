@@ -1,13 +1,16 @@
 import { betterAuth } from "better-auth";
 import { Pool } from "@neondatabase/serverless";
 
+const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+
 export const auth = betterAuth({
   database: new Pool({
     connectionString: process.env.DATABASE_URL,
   }),
   secret: process.env.BETTER_AUTH_SECRET,
-  baseURL: process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
+  baseURL: appUrl,
   basePath: "/api/auth",
+  trustedOrigins: [appUrl],
   socialProviders: {
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -18,6 +21,12 @@ export const auth = betterAuth({
     cookieCache: {
       enabled: true,
       maxAge: 5 * 60,
+    },
+  },
+  advanced: {
+    defaultCookieAttributes: {
+      sameSite: "lax",
+      secure: true,
     },
   },
 });
