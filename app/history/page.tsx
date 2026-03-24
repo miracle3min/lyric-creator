@@ -215,18 +215,6 @@ export default function HistoryPage() {
                 </pre>
               </Section>
 
-              {/* Instruments */}
-              {selected.instruments_output && (
-                <Section
-                  title="Instruments"
-                  copyable
-                  onCopy={() => copyToClipboard(selected.instruments_output!, "instruments")}
-                  copied={copiedField === "instruments"}
-                >
-                  <p className="text-gray-300 text-sm">{selected.instruments_output}</p>
-                </Section>
-              )}
-
               {/* SUNO Prompt */}
               {selected.suno_prompt && (
                 <Section

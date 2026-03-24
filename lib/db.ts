@@ -54,7 +54,6 @@ export async function saveGeneration(
   result: {
     title: string;
     lyrics: string;
-    instruments: string;
     sunoPrompt: string;
     coverArtPrompt: string;
   },
@@ -83,7 +82,7 @@ export async function saveGeneration(
         ${request.description ?? null},
         ${result.title},
         ${result.lyrics},
-        ${result.instruments},
+        ${null},
         ${result.sunoPrompt},
         ${result.coverArtPrompt},
         ${provider}

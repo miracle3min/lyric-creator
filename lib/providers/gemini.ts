@@ -4,7 +4,7 @@ import { buildSystemPrompt, buildUserPrompt } from "@/lib/prompt";
 import { logger } from "@/lib/logger";
 
 const MAX_RETRIES = 2;
-const REQUIRED_FIELDS = ["title", "lyrics", "instruments", "sunoPrompt", "coverArtPrompt"];
+const REQUIRED_FIELDS = ["title", "lyrics", "sunoPrompt", "coverArtPrompt"];
 
 /**
  * Extract valid JSON from AI response text.

@@ -2,18 +2,17 @@
 
 import { useState } from "react";
 import { SongResult } from "@/types";
-import { FiCopy, FiCheck, FiMusic, FiCpu, FiTerminal, FiImage } from "react-icons/fi";
+import { FiCopy, FiCheck, FiMusic, FiTerminal, FiImage } from "react-icons/fi";
 import { toast } from "sonner";
 
 interface ResultCardProps {
   result: SongResult;
 }
 
-type Tab = "lyrics" | "instruments" | "suno" | "coverArt";
+type Tab = "lyrics" | "suno" | "coverArt";
 
 const TABS: { key: Tab; label: string; shortLabel: string; icon: React.ReactNode }[] = [
   { key: "lyrics", label: "Lyrics", shortLabel: "Lyrics", icon: <FiMusic /> },
-  { key: "instruments", label: "Instruments", shortLabel: "Instr.", icon: <FiCpu /> },
   { key: "suno", label: "SUNO Prompt", shortLabel: "SUNO", icon: <FiTerminal /> },
   { key: "coverArt", label: "Cover Art", shortLabel: "Cover", icon: <FiImage /> },
 ];
@@ -24,7 +23,6 @@ export default function ResultCard({ result }: ResultCardProps) {
 
   const content: Record<Tab, string> = {
     lyrics: result.lyrics,
-    instruments: result.instruments,
     suno: result.sunoPrompt,
     coverArt: result.coverArtPrompt,
   };
@@ -44,7 +42,6 @@ export default function ResultCard({ result }: ResultCardProps) {
     try {
       const allContent = `🎵 ${result.title}\n\n` +
         `━━━ LYRICS ━━━\n${result.lyrics}\n\n` +
-        `━━━ INSTRUMENTS ━━━\n${result.instruments}\n\n` +
         `━━━ SUNO PROMPT ━━━\n${result.sunoPrompt}\n\n` +
         `━━━ COVER ART PROMPT ━━━\n${result.coverArtPrompt}`;
       await navigator.clipboard.writeText(allContent);
@@ -127,6 +124,13 @@ export default function ResultCard({ result }: ResultCardProps) {
               <FiCopy />
             )}
           </button>
+        )}
+
+        {/* Character count for SUNO prompt */}
+        {activeTab === "suno" && content.suno && (
+          <div className="mt-2 text-right text-[10px] text-gray-500">
+            {content.suno.length} / 1000 characters
+          </div>
         )}
       </div>
     </div>

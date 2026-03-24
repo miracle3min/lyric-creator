@@ -47,7 +47,6 @@ export async function POST(req: NextRequest) {
     const result: SongResult = {
       title: data.title || "Untitled",
       lyrics: data.lyrics || "No lyrics generated",
-      instruments: data.instruments || "No instrument details generated",
       sunoPrompt: data.sunoPrompt || data.suno_prompt || "No SUNO prompt generated",
       coverArtPrompt: data.coverArtPrompt || data.cover_art_prompt || "No cover art prompt generated",
       generatedAt: new Date().toISOString(),

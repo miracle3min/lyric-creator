@@ -12,7 +12,6 @@ export interface SongRequest {
 export interface SongResult {
   title: string;
   lyrics: string;
-  instruments: string;
   sunoPrompt: string;
   coverArtPrompt: string;
   generatedAt: string;
