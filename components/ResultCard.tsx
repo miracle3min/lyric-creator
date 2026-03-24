@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { SongResult } from "@/types";
-import { FiCopy, FiCheck, FiMusic, FiTerminal, FiImage, FiDownload, FiLoader, FiRefreshCw } from "react-icons/fi";
+import { FiCopy, FiCheck, FiMusic, FiTerminal, FiImage, FiDownload, FiRefreshCw } from "react-icons/fi";
 import { toast } from "sonner";
 
 interface ResultCardProps {
@@ -22,7 +22,7 @@ export default function ResultCard({ result }: ResultCardProps) {
   const [copied, setCopied] = useState<Tab | null>(null);
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
-  const [imageError, setImageError] = useState(false);
+  const [imageError, setImageError] = useState<string | null>(null);
 
   const content: Record<Tab, string> = {
     lyrics: result.lyrics,
@@ -54,40 +54,44 @@ export default function ResultCard({ result }: ResultCardProps) {
     }
   };
 
-  const handleGenerateImage = () => {
+  const handleGenerateImage = async () => {
     setIsGeneratingImage(true);
-    setImageError(false);
-    const prompt = encodeURIComponent(result.coverArtPrompt);
-    const seed = Math.floor(Math.random() * 100000);
-    const imageUrl = `https://image.pollinations.ai/prompt/${prompt}?width=1024&height=1024&seed=${seed}&nologo=true&model=flux`;
-    setGeneratedImage(imageUrl);
+    setImageError(null);
+    setGeneratedImage(null);
+
+    try {
+      const res = await fetch("/api/generate-image", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt: result.coverArtPrompt }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to generate image");
+      }
+
+      setGeneratedImage(data.image);
+      setIsGeneratingImage(false);
+      toast.success("Cover art generated! 🎨");
+    } catch (err) {
+      setIsGeneratingImage(false);
+      const message = err instanceof Error ? err.message : "Failed to generate image";
+      setImageError(message);
+      toast.error(message);
+    }
   };
 
-  const handleImageLoad = () => {
-    setIsGeneratingImage(false);
-    toast.success("Cover art generated! 🎨");
-  };
-
-  const handleImageError = () => {
-    setIsGeneratingImage(false);
-    setImageError(true);
-    toast.error("Failed to generate image. Try again!");
-  };
-
-  const handleDownloadImage = async () => {
+  const handleDownloadImage = () => {
     if (!generatedImage) return;
     try {
-      toast.info("Downloading image...");
-      const res = await fetch(generatedImage);
-      const blob = await res.blob();
-      const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
-      a.href = url;
-      a.download = `${result.title.replace(/[^a-zA-Z0-9]/g, "_")}_cover.png`;
+      a.href = generatedImage;
+      a.download = `${result.title.replace(/[^a-zA-Z0-9]/g, "_")}_cover.jpg`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
-      URL.revokeObjectURL(url);
       toast.success("Image downloaded!");
     } catch {
       toast.error("Failed to download image");
@@ -170,7 +174,7 @@ export default function ResultCard({ result }: ResultCardProps) {
             </div>
 
             {/* Generate Image Button */}
-            {!generatedImage && !isGeneratingImage && (
+            {!generatedImage && !isGeneratingImage && !imageError && (
               <button
                 onClick={handleGenerateImage}
                 className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-brand-500 to-violet-500 px-4 py-3 text-sm font-semibold text-white transition-all hover:from-brand-600 hover:to-violet-600 hover:shadow-lg hover:shadow-brand-500/25 sm:text-base"
@@ -181,7 +185,7 @@ export default function ResultCard({ result }: ResultCardProps) {
             )}
 
             {/* Loading State */}
-            {isGeneratingImage && !imageError && (
+            {isGeneratingImage && (
               <div className="flex flex-col items-center justify-center rounded-xl bg-black/30 p-8">
                 <div className="relative mb-4">
                   <div className="h-16 w-16 rounded-full border-2 border-brand-500/30" />
@@ -189,57 +193,53 @@ export default function ResultCard({ result }: ResultCardProps) {
                   <FiImage className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-2xl text-brand-400" />
                 </div>
                 <p className="text-sm text-gray-400">Generating your cover art...</p>
-                <p className="mt-1 text-xs text-gray-500">This may take 10-30 seconds</p>
+                <p className="mt-1 text-xs text-gray-500">Powered by FLUX AI • ~10-30 seconds</p>
+              </div>
+            )}
+
+            {/* Error state */}
+            {imageError && !isGeneratingImage && (
+              <div className="flex flex-col items-center rounded-xl bg-black/30 p-6 text-center">
+                <p className="mb-3 text-sm text-red-400">{imageError}</p>
+                <button
+                  onClick={handleGenerateImage}
+                  className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-brand-500 to-violet-500 px-4 py-2 text-sm font-medium text-white transition-all hover:from-brand-600 hover:to-violet-600"
+                >
+                  <FiRefreshCw />
+                  Try Again
+                </button>
               </div>
             )}
 
             {/* Generated Image */}
-            {generatedImage && (
+            {generatedImage && !isGeneratingImage && (
               <div className="space-y-3">
                 <div className="relative overflow-hidden rounded-xl bg-black/30">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={generatedImage}
                     alt={`Cover art for ${result.title}`}
-                    className={`w-full rounded-xl transition-opacity duration-500 ${isGeneratingImage ? "opacity-0" : "opacity-100"}`}
-                    onLoad={handleImageLoad}
-                    onError={handleImageError}
+                    className="w-full rounded-xl"
                   />
                 </div>
 
                 {/* Image action buttons */}
-                {!isGeneratingImage && !imageError && (
-                  <div className="flex gap-2">
-                    <button
-                      onClick={handleDownloadImage}
-                      className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-white/5 px-4 py-2.5 text-sm font-medium text-gray-300 transition-all hover:bg-white/10 hover:text-white"
-                    >
-                      <FiDownload />
-                      Download
-                    </button>
-                    <button
-                      onClick={handleGenerateImage}
-                      className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-white/5 px-4 py-2.5 text-sm font-medium text-gray-300 transition-all hover:bg-white/10 hover:text-white"
-                    >
-                      <FiRefreshCw />
-                      Regenerate
-                    </button>
-                  </div>
-                )}
-
-                {/* Error state */}
-                {imageError && (
-                  <div className="text-center">
-                    <p className="mb-3 text-sm text-red-400">Failed to generate image</p>
-                    <button
-                      onClick={handleGenerateImage}
-                      className="inline-flex items-center gap-2 rounded-xl bg-white/5 px-4 py-2 text-sm font-medium text-gray-300 transition-all hover:bg-white/10 hover:text-white"
-                    >
-                      <FiRefreshCw />
-                      Try Again
-                    </button>
-                  </div>
-                )}
+                <div className="flex gap-2">
+                  <button
+                    onClick={handleDownloadImage}
+                    className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-white/5 px-4 py-2.5 text-sm font-medium text-gray-300 transition-all hover:bg-white/10 hover:text-white"
+                  >
+                    <FiDownload />
+                    Download
+                  </button>
+                  <button
+                    onClick={handleGenerateImage}
+                    className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-white/5 px-4 py-2.5 text-sm font-medium text-gray-300 transition-all hover:bg-white/10 hover:text-white"
+                  >
+                    <FiRefreshCw />
+                    Regenerate
+                  </button>
+                </div>
               </div>
             )}
           </div>
