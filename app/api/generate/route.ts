@@ -3,7 +3,7 @@ import { GenerateRequest, SongResult } from "@/types";
 import { generateWithGemini } from "@/lib/providers/gemini";
 import { initDb, saveGeneration } from "@/lib/db";
 import { logger } from "@/lib/logger";
-import { getSession } from "@/lib/auth/server";
+
 
 let dbInitialized = false;
 
@@ -11,15 +11,6 @@ export async function POST(req: NextRequest) {
   const requestId = crypto.randomUUID().slice(0, 8);
 
   try {
-    // Check email verification
-    const session = await getSession();
-    if (!session?.user?.emailVerified) {
-      return NextResponse.json(
-        { error: "Email belum terverifikasi. Silakan verifikasi email kamu terlebih dahulu." },
-        { status: 403 }
-      );
-    }
-
     const body: GenerateRequest = await req.json();
     const { song } = body;
 

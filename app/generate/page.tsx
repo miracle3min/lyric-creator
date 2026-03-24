@@ -25,13 +25,6 @@ export default function GeneratePage() {
     }
   }, [session, isPending, router]);
 
-  // Redirect unverified users
-  useEffect(() => {
-    if (!isPending && session?.user && !session.user.emailVerified) {
-      router.replace("/verify-email");
-    }
-  }, [session, isPending, router]);
-
   const handleGenerate = async (song: SongRequest) => {
     setIsLoading(true);
     setResult(null);
