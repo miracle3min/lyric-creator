@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { GenerateRequest, SongResult } from "@/types";
 import { generateWithGemini } from "@/lib/providers/gemini";
 import { initDb, saveGeneration } from "@/lib/db";
+import { getSession } from "@/lib/auth/server";
 import { logger } from "@/lib/logger";
 
 
