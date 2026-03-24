@@ -90,7 +90,7 @@ export default function LandingPage() {
             {/* Badge */}
             <div className={`inline-flex items-center gap-2 rounded-full border border-brand-500/20 bg-brand-500/10 px-4 py-1.5 text-sm font-medium text-brand-400 mb-8 transition-all duration-700 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
               <FiZap className="text-brand-400" />
-              Powered by Google Gemini AI
+              Powered by AI Technology
             </div>
 
             {/* Headline */}
@@ -260,7 +260,7 @@ export default function LandingPage() {
               {
                 icon: <FiZap className="text-2xl" />,
                 title: "Super Cepat",
-                desc: "Powered by Google Gemini AI. Generate lirik lengkap dalam hitungan detik, bukan menit.",
+                desc: "Powered by AI canggih. Generate lirik lengkap dalam hitungan detik, bukan menit.",
                 gradient: "from-amber-500 to-orange-500",
                 glow: "bg-amber-500/10",
               },
@@ -326,7 +326,7 @@ export default function LandingPage() {
               {
                 step: "02",
                 title: "AI Generate",
-                desc: "Google Gemini AI akan membuat lirik, prompt SUNO, dan prompt cover art.",
+                desc: "AI akan membuat lirik, prompt SUNO, dan prompt cover art secara otomatis.",
                 emoji: "🤖",
               },
               {
@@ -402,7 +402,7 @@ export default function LandingPage() {
               <span className="text-sm font-semibold text-gray-400">BuatLirik</span>
             </div>
             <p className="text-sm text-gray-600">
-              © 2025 BuatLirik. Powered by Google Gemini AI.
+              © 2025 BuatLirik. A product by <span className="text-purple-400 font-semibold">DirgaX Media</span>.
             </p>
           </div>
         </div>
