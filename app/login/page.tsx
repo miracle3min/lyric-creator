@@ -13,7 +13,7 @@ export default function LoginPage() {
     try {
       await signIn.social({
         provider: "google",
-        callbackURL: "/verify-email",
+        callbackURL: "/generate",
       });
     } catch (err: any) {
       setError(err?.message || "Login failed. Please try again.");
